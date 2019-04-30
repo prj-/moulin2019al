@@ -23,7 +23,8 @@ include "include/params.idp"
 int nev = getARGV("-nev", 5);
 int ncv = getARGV("-ncv", 3 * nev);
 
-if(mpirank == 0) cout << " ### Loading mesh..." << endl;
+if(mpirank == 0) cout << "Loading mesh..." << endl;
+real time = mpiWtime();
 
 mesh3 th = buildlayers(square(1, 1), 1);
 fespace Wh(th, Pk); // complete space [u, v, w, p]
@@ -38,18 +39,17 @@ Wh<complex> [uc1, uc2, uc3, pc];
 macro eigensolver()//
 include "include/decomposition.idp"
 
-if(mpirank == 0) cout << " ### Loading mesh... Done " << endl;
+time = mpiWtime() - time;
+if(mpirank == 0) cout << " ### Loading mesh done in " << time << "s" << endl;
 
 complex[int]     val(nev);      // array to store eigenvalues
 Wh<complex>[int] def(vec)(nev); // array to store eigenvectors
-
-real time;
 
 include "include/varf.idp"
 
 varf vM([u1, u2, u3, p], [v1, v2, v3, q]) = int3d(th)(u1 * v1 + u2 * v2 + u3 * v3);
 
-if(mpirank == 0) cout << " Matrix assembly..." << endl;
+if(mpirank == 0) cout << "Matrix assembly..." << endl;
 time = mpiWtime();
 matrix<complex> J = vJ(Wh, Wh);
 J = -J; // opposite of the Jacobian because SLEPc solves J*q=sigma*M*q
@@ -61,7 +61,7 @@ Mat<complex> dM(dJ, M, clean = true);
 time = mpiWtime() - time;
 if(mpirank == 0) cout << " ### Matrix assembly done in " << time << "s" << endl;
 
-if(mpirank == 0) cout << " ### SLEPc..." << endl;
+if(mpirank == 0) cout << "SLEPc..." << endl;
 time = mpiWtime();
 
 include "include/fieldsplit.idp"
@@ -94,15 +94,15 @@ string paramsP = "-prefix_push st_fieldsplit_p_ " +
 /*# Krylov #*/
 int recycle = getARGV("-recycle", 0); // use GMRES by default
 int restart = getARGV("-restart", 200); // default to 200
-real tolInner = getARGV("-inner_tol", 1.0e-4); // default to %*\color{DarkGreen}{$10^{-4}$}*)
+real innerTol = getARGV("-inner_tol", 1.0e-4); // default to %*\color{DarkGreen}{$10^{-4}$}*)
 string paramsKrylov = (recycle == 0 ?  "-st_ksp_type fgmres " +
-    "-st_ksp_monitor -st_ksp_rtol " + tolInner +
+    "-st_ksp_monitor -st_ksp_rtol " + innerTol +
     " -st_ksp_gmres_restart " + restart + " -st_ksp_max_it 1000" 
     :
     "-st_ksp_type hpddm -hpddm_st_krylov_method gcrodr " +
     "-hpddm_st_recycle " + recycle + " -hpddm_st_max_it 1000" +
     " -hpddm_st_verbosity 4 -hpddm_st_gmres_restart " + restart +
-    " -hpddm_st_tol " + tolInner + " -hpddm_st_variant flexible");
+    " -hpddm_st_tol " + innerTol + " -hpddm_st_variant flexible");
 /*# EndKrylov #*/
 
 /*# AllParams #*/
@@ -114,13 +114,13 @@ string params = "-eps_tol 1.0e-6 -eps_nev " + nev + " -eps_ncv " + ncv + " " +
 /*# EndAllParams #*/
 
 /*# EPS #*/
-int k = zeigensolver(dJ, dM, vectors = vec, values  = val, sparams = params,
+int k = EPSSolve(dJ, dM, vectors = vec, values  = val, sparams = params,
   fields = vX[], names = names, schurPreconditioner = S, schurList = listX[]);
 // solves the eigenvalue problem %*\color{DarkGreen}{$\texttt{dJ} \pqqh = \sigma \texttt{dM} \pqqh$}*)
 /*# EndEPS #*/
 
 time = mpiWtime() - time;
-if(mpirank == 0) cout << " ### SLEPc finished in " << time << "s" << endl;
+if(mpirank == 0) cout << " ### SLEPc done in " << time << "s" << endl;
 for(int i = 0; i < nev; ++i) {
     ofstream file(SaveDirName + "/EV/EV_" + nf + "_" + mpirank + "-" + mpisize + "_" + i + ".dat");
     file.precision(16);

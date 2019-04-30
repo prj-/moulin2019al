@@ -26,7 +26,7 @@ macro def(i)[i, i#B, i#C, i#D]//
 macro init(i)[i, i, i, i]//
 
 real Re = getARGV("-Re", 100);
-real gamma = getARGV("-gamma", 0.1);
+real gamma = getARGV("-gamma", 0.3);
 real nu = 1.0/Re;
 string nf = getARGV("-mesh", "FlatPlate3D.mesh");
 func Pk = [P2, P2, P2, P1];
@@ -36,7 +36,7 @@ string SaveDirName = "State";
 
 if(mpirank == 0) {
     cout << "##################################### " << endl;
-    cout << "###  Parameters ##################### " << endl;
+    cout << "#### Parameters ##################### " << endl;
     cout << "##################################### " << endl;
     cout << "Re ..................... " << Re << endl;
     cout << "gamma .................. " << gamma << endl;

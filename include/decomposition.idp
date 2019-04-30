@@ -18,11 +18,10 @@
  */
 
 if(Re < 75) {
-    mesh3 thG;
-    if(mpirank == 0) thG = readmesh3(MeshFileName); // global mesh read on rank 0
-    broadcast(processor(0, mpiCommWorld), thG);     // global mesh broadcasted to all ranks
-    int split = getARGV("-split", 1);               // refinement parameter
-    buildPETSc(th, thG, split, D, arrayIntersection, restrictionIntersection, Wh, Pk, mpiCommWorld)
+    if(mpirank == 0) th = readmesh3(MeshFileName); // global mesh read on rank 0
+    broadcast(processor(0, mpiCommWorld), th);     // global mesh broadcasted to all ranks
+    int split = getARGV("-split", 1);              // refinement parameter
+    build(th, split, D, arrayIntersection, restrictionIntersection, Pk, mpiCommWorld)
     [uc1, uc2, uc3, pc] = [1, 0, 0, 0];
 }
 else {

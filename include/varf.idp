@@ -49,5 +49,5 @@ ENDIFMACRO
     )
     // Dirichlet (inlet + plate)
     + on(1, 2, u1 = 0, u2 = 0, u3 = 0)
-    // far-field (zmax and ymax)
+    // far field (zmax and ymax)
     + on(6, 7, u1 = 0);
