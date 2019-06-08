@@ -4,7 +4,7 @@
 
 ![](header.png)
 
-The code available in this repository can reproduce the results from the following paper.
+The code available in this repository can reproduce the results from the following [paper](https://doi.org/10.1016/j.cma.2019.03.052).
 ```
 @article{moulin2019al,
     Author = {Moulin, Johann and Jolivet, Pierre and Marquet, Olivier},
@@ -20,7 +20,7 @@ The code available in this repository can reproduce the results from the followi
 
 ## Getting started
 ### Dependencies
-Make sure you have access to a recent [FreeFEM](https://freefem.org/) installation (version 4.1 or above), compiled with the `PETSc` and `PETSc-complex` **(with SLEPc)** plugins. More details about the [PETSc](https://www.mcs.anl.gov/petsc/petsc-current/docs/manual.pdf) and [SLEPc](http://slepc.upv.es/documentation/slepc.pdf) options used in the solvers may be found in their respective manual.
+Make sure you have access to a recent [FreeFEM](https://freefem.org/) installation (above version 4.2.1), compiled with the `PETSc` and `PETSc-complex` **(with SLEPc)** plugins. More details about the [PETSc](https://www.mcs.anl.gov/petsc/petsc-current/docs/manual.pdf) and [SLEPc](http://slepc.upv.es/documentation/slepc.pdf) options used in the solvers may be found in their respective manual.
 ### Usage example
 A small mesh is provided in the `Mesh` folder. One should be able to launch the following command, which solves the steady Navier–Stokes equations for a Reynolds number of 50 (`-Re 50`) on the same geometrical configuration as in the paper.
 ```

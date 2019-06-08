@@ -30,9 +30,8 @@ mesh3 th = buildlayers(square(1, 1), 1);
 fespace Wh(th, Pk); // complete space [u, v, w, p]
 fespace Qh(th, P1); // pressure space for Schur complement
 
-int[int] arrayIntersection;               // ranks of neighboring subdomains
-int[int][int] restrictionIntersection(0); // local-to-neighbors renumbering
-real[int] D;                              // partition of unity
+int[int][int] intersection; // local-to-neighbors renumbering
+real[int] D;                // partition of unity
 
 Wh<complex> [uc1, uc2, uc3, pc];
 
@@ -54,7 +53,7 @@ time = mpiWtime();
 matrix<complex> J = vJ(Wh, Wh);
 J = -J; // opposite of the Jacobian because SLEPc solves J*q=sigma*M*q
 verbosity = 1;
-Mat<complex> dJ(J, arrayIntersection, restrictionIntersection, D, clean = true);
+Mat<complex> dJ(J, intersection, D, clean = true);
 verbosity = 0;
 matrix<complex> M = vM(Wh, Wh);
 Mat<complex> dM(dJ, M, clean = true);

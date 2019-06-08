@@ -21,7 +21,7 @@ if(Re < 75) {
     if(mpirank == 0) th = readmesh3(MeshFileName); // global mesh read on rank 0
     broadcast(processor(0, mpiCommWorld), th);     // global mesh broadcasted to all ranks
     int split = getARGV("-split", 1);              // refinement parameter
-    build(th, split, D, arrayIntersection, restrictionIntersection, Pk, mpiCommWorld)
+    build(th, split, intersection, D, Pk, mpiCommWorld)
     [uc1, uc2, uc3, pc] = [1, 0, 0, 0];
 }
 else {
@@ -39,13 +39,11 @@ else {
         file >> D;
         int tmp;
         file >> tmp;
-        arrayIntersection.resize(tmp);
-        restrictionIntersection.resize(tmp);
-        file >> arrayIntersection;
-        for(int i = 0; i < arrayIntersection.n; ++i) {
+        intersection.resize(tmp);
+        for(int i = 0; i < intersection.n; ++i) {
             file >> tmp;
-            restrictionIntersection[i].resize(tmp);
-            file >> restrictionIntersection[i];
+            intersection[i].resize(tmp);
+            file >> intersection[i];
         }
     }
 IFMACRO(eigensolver)

@@ -29,9 +29,8 @@ mesh3 th = buildlayers(square(1, 1), 1);
 fespace Wh(th, Pk); // complete space [u, v, w, p]
 fespace Qh(th, P1); // pressure space for Schur complement
 
-int[int] arrayIntersection;               // ranks of neighboring subdomains
-int[int][int] restrictionIntersection(0); // local-to-neighbors renumbering
-real[int] D;                              // partition of unity
+int[int][int] intersection; // local-to-neighbors renumbering
+real[int] D;                // partition of unity
 
 Wh [uc1, uc2, uc3, pc];
 
@@ -82,7 +81,7 @@ ENDIFMACRO
     + on(6, 7, u1 = uc1-1);
 
 verbosity = 1;
-Mat dJ(Wh.ndof, arrayIntersection, restrictionIntersection, D);
+Mat dJ(Wh.ndof, intersection, D);
 verbosity = 0;
 
 include "include/fieldsplit.idp"
@@ -125,7 +124,7 @@ func real[int] funcRes(real[int]& inPETSc) {
 func int funcJ(real[int]& inPETSc) {
     changeNumbering(dJ, uc1[], inPETSc, inverse = true, exchange = true);
     matrix J = vJ(Wh, Wh, tgv = -1);
-    changeOperator(dJ, J);
+    dJ = J;
     return 0;
 }
 real[int] xPETSc;
@@ -141,11 +140,10 @@ if(Re < 75) {
     {
         ofstream file(SaveDirName + "/setup_" + nf + "_" + mpirank + "-" + mpisize + ".dat");
         file << D << endl;
-        file << arrayIntersection.n << endl;
-        file << arrayIntersection << endl;
-        for(int i = 0; i < arrayIntersection.n; ++i) {
-            file << restrictionIntersection[i].n << endl;
-            file << restrictionIntersection[i] << endl;
+        file << intersection.n << endl;
+        for(int i = 0; i < intersection.n; ++i) {
+            file << intersection[i].n << endl;
+            file << intersection[i] << endl;
         }
     }
     ofstream file(SaveDirName + "/base_" + nf + "_" + mpirank + "-" + mpisize + ".dat");
