@@ -96,12 +96,12 @@ int restart = getARGV("-restart", 200); // default to 200
 real innerTol = getARGV("-inner_tol", 1.0e-4); // default to %*\color{DarkGreen}{$10^{-4}$}*)
 string paramsKrylov = (recycle == 0 ?  "-st_ksp_type fgmres " +
     "-st_ksp_monitor -st_ksp_rtol " + innerTol +
-    " -st_ksp_gmres_restart " + restart + " -st_ksp_max_it 1000" 
+    " -st_ksp_gmres_restart " + restart + " -st_ksp_max_it 1000"
     :
-    "-st_ksp_type hpddm -hpddm_st_krylov_method gcrodr " +
-    "-hpddm_st_recycle " + recycle + " -hpddm_st_max_it 1000" +
-    " -hpddm_st_verbosity 4 -hpddm_st_gmres_restart " + restart +
-    " -hpddm_st_tol " + innerTol + " -hpddm_st_variant flexible");
+    "-st_ksp_type hpddm -st_ksp_hpddm_krylov_method gcrodr " +
+    "-st_ksp_hpddm_recycle " + recycle + " -st_ksp_max_it 1000 " +
+    "-st_ksp_monitor -st_ksp_gmres_restart " + restart +
+    " -st_ksp_rtol " + innerTol + " -st_ksp_hpddm_variant flexible");
 /*# EndKrylov #*/
 
 /*# AllParams #*/
