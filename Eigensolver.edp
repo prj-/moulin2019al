@@ -94,14 +94,15 @@ string paramsP = "-prefix_push st_fieldsplit_p_ " +
 int recycle = getARGV("-recycle", 0); // use GMRES by default
 int restart = getARGV("-restart", 200); // default to 200
 real innerTol = getARGV("-inner_tol", 1.0e-4); // default to %*\color{DarkGreen}{$10^{-4}$}*)
-string paramsKrylov = (recycle == 0 ?  "-st_ksp_type fgmres " +
-    "-st_ksp_monitor -st_ksp_rtol " + innerTol +
-    " -st_ksp_gmres_restart " + restart + " -st_ksp_max_it 1000"
+string paramsKrylov = "-st_ksp_monitor -st_ksp_rtol " + innerTol +
+    " -st_ksp_gmres_restart " + restart + " -st_ksp_max_it 1000 " +
+    (recycle == 0 ?  "-st_ksp_type fgmres "
     :
-    "-st_ksp_type hpddm -st_ksp_hpddm_krylov_method gcrodr " +
-    "-st_ksp_hpddm_recycle " + recycle + " -st_ksp_max_it 1000 " +
-    "-st_ksp_monitor -st_ksp_gmres_restart " + restart +
-    " -st_ksp_rtol " + innerTol + " -st_ksp_hpddm_variant flexible");
+    "-st_ksp_type hpddm -st_ksp_hpddm_type gcrodr " +
+    "-st_ksp_hpddm_recycle " + recycle +
+    " -st_ksp_hpddm_variant flexible ");
+if(usedARGV("-st_ksp_converged_reason") != -1)
+    paramsKrylov = "";
 /*# EndKrylov #*/
 
 /*# AllParams #*/
