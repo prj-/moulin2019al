@@ -2,7 +2,7 @@
 
 > A parallel implementation of the steady Navier–Stokes and eigenvalue solvers, developed in the FreeFEM language, suitably interfaced with the PETSc/SLEPc libraries.
 
-<p align="center"><img src="https://github.com/prj-/moulin2019al/raw/master/header.png" height="300"></p>
+<p align="center"><img src="https://github.com/prj-/moulin2019al/raw/main/header.png" height="300"></p>
 
 The code available in this repository can reproduce the results from the following [paper](https://doi.org/10.1016/j.cma.2019.03.052).
 ```
